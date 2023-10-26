@@ -62,7 +62,7 @@ parser.add_argument("--test_filename", type=str, default="test_after_15_cleaned.
 parser.add_argument(
     "--test_method",
     type=str,
-    choices=["BERT", "MPTR", "BERT+MetaMap"],
+    choices=["BERT", "MPTR", "BERT+MetaMap", "MPTR+AutoT"],
     default="MPTR",
 )
 

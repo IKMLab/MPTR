@@ -44,7 +44,7 @@ parser.add_argument("--ckpt_path", type=str, default="checkpoint-400")
 
 infer_args = parser.parse_args()
 method = "finetune" if infer_args.test_method == "BERT" else "prompt"
-prompt_FT = True if infer_args.test_method == "MPTR" else False
+prompt_FT = True if "MPTR" in infer_args.test_method else False
 
 test = pd.read_pickle(f"data/{infer_args.test_filename}")
 if "cleaned" in infer_args.test_filename:
