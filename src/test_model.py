@@ -65,6 +65,10 @@ for seed in seeds:
         # To prevent mistakes
         assert args.prompt != ""
 
+    # Add compatibility after HuggingFace's update
+    if args.model_name == "microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract":
+        args.model_name = "microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract"
+
     tokenizer = AutoTokenizer.from_pretrained(args.model_name)
     model_path = f"{EXP_DIR}/{infer_args.ckpt_path}"
     if prompt_FT:
