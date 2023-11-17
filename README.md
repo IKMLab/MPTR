@@ -45,8 +45,8 @@ mkdir checkpoints
 │       ├── seed_7
 │       └── seed_10
 ├── data
-│   ├── class_names.pkl
-│   └── test_after_15_cleaned.pkl
+│   ├── class_names.pkl # dictionary: class names (key) -> index (value)
+│   └── test.pkl # the test set we used in our paper
 ├── logs
 ├── src
 ```
@@ -67,13 +67,46 @@ For each seed, the folder structure is as follows:
     │   └── pytorch_model.bin
     └── args.json
 ```
+## Check the Dataset
+```
+python
+>>> import pandas as pd
+>>> df = pd.read_pickle("data/test.pkl")
+>>> df.head()
+   doc_idx                                                  X                 y_true
+0        0  A 75 Y/O male; Clinical Information:LC-C, Incr...  [1, 1, 1, 1, 0, 0, 0]
+1        2  Clinical Information: A 80 Y/O male; colon can...  [0, 0, 0, 0, 0, 1, 0]
+2        3  A 29 Y/O male; Clinical Information:Chronic pa...  [0, 0, 0, 0, 1, 0, 0]
+3        4  A 55 Y/O female; Clinical Information:A case o...  [0, 0, 0, 0, 1, 0, 0]
+4        5  A 60 Y/O female; Clinical Information:A case o...  [1, 0, 0, 0, 0, 0, 0]
+```
+- `doc_idx`: the index of the report
+- `X`: the text report
+- `y_true`: the ground truth labels
+
+Since the report labeling is a multi-label classification task, the `y_true` is a list of 0 and 1. The index of the list corresponds to the index of the class name in `class_names.pkl`.
+```
+python
+>>> import pandas as pd
+>>> class_names = pd.read_pickle("data/class_names.pkl")
+>>> class_names
+{'cyst': 0, 'HCC': 1, 'post-treatment': 2, 'cirrhosis': 3, 'steatosis': 4, 'metastasis': 5, 'hemangioma': 6}
+```
+For example, the first report in the test set has the following ground truth labels:
+```
+[1, 1, 1, 1, 0, 0, 0]
+```
+which means the report has the following labels:
+```
+['cyst', 'HCC', 'post-treatment', 'cirrhosis']
+```
 
 ## Run Inference
 - Take MPTR+AutoT as an example:
 ```bash
 python src/test_model.py \
 --data_type train_32 \
---test_filename test_after_15_cleaned.pkl \
+--test_filename test.pkl \
 --test_method MPTR \
 --ckpt_path checkpoint-400
 ```
@@ -85,7 +118,7 @@ python src/test_model.py \
 ```bash
 python src/evaluate.py \
 --data_type train_32 \
---test_filename test_after_15_cleaned.pkl \
+--test_filename test.pkl \
 --test_method MPTR+AutoT
 ```
 - Replace `MPTR+AutoT` with `MPTR` or `BERT` for `--test_method` to evaluate the report labeling task with the other methods.
