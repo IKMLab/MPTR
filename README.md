@@ -69,7 +69,6 @@ For each seed, the folder structure is as follows:
 ```
 ## Check the Dataset
 ```
-python
 >>> import pandas as pd
 >>> df = pd.read_pickle("data/test.pkl")
 >>> df.head()
@@ -86,7 +85,6 @@ python
 
 Since the report labeling is a multi-label classification task, the `y_true` is a list of 0 and 1. The index of the list corresponds to the index of the class name in `class_names.pkl`.
 ```
-python
 >>> import pandas as pd
 >>> class_names = pd.read_pickle("data/class_names.pkl")
 >>> class_names
