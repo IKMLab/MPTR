@@ -25,7 +25,7 @@ def get_trained_model_f1s(
 ):
     macro_f1s = []
     micro_f1s = []
-    for seed in seeds:
+    for i, seed in enumerate(seeds):
         preds = pd.read_pickle(
             f"results/{data_type}/{method}/seed_{seed}/predict/predictions.pkl"
         )
@@ -35,7 +35,7 @@ def get_trained_model_f1s(
         seed_result, macro_f1, micro_f1 = get_f1_scores(y_true, y_pred)
         macro_f1s.append(macro_f1)
         micro_f1s.append(micro_f1)
-        if seed == 0:
+        if i == 0:
             all_results = seed_result
         else:
             all_results = np.vstack((all_results, seed_result))
@@ -43,9 +43,10 @@ def get_trained_model_f1s(
     std_results = np.std(all_results, axis=0)
     print("Average results:")
     for f1, label, std in zip(avg_results, class_dict, std_results):
-        print(f"{label}: {f1:.3f} ({std:.3f})")
-    print(f"Macro F1: {np.average(macro_f1s):.3f} ({np.std(macro_f1s):.3f})")
-    print(f"Micro F1: {np.average(micro_f1s):.3f} ({np.std(micro_f1s):.3f})")
+        print(f"{label}: {f1} ({std})")
+
+    print(f"Macro F1: {np.average(macro_f1s)} ({np.std(macro_f1s)})")
+    print(f"Micro F1: {np.average(micro_f1s)} ({np.std(micro_f1s)})")
 
 
 def do_union(base_preds: list, metamap_preds: list):
