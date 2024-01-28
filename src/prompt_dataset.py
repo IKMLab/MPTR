@@ -28,6 +28,7 @@ def tokenize_multipart_input(
         template (str, optional): placeholder for the prompt.
         prompt (str, optional): the prompt we use for input text.
     """
+
     def enc(text):
         return tokenizer.encode(text, add_special_tokens=False)
 
@@ -53,13 +54,11 @@ def tokenize_multipart_input(
             if template_list[cls_pos + 1] == "":
                 # For these kinds of cases: *cls**sent_0*_Liver*mask*.*sep+*
                 # Prompt is next to sent_0.
-                prompt = template_list[cls_pos + 3]
-            elif template_list[cls_pos + 1] != "" and (
-                template_list[cls_pos + 1].startswith("_")
-            ):
+                prompt = template_list[cls_pos + 3] + " " + template_list[cls_pos + 5]
+            elif template_list[cls_pos + 1] != "":
                 # For these kinds of cases: *cls*_Liver*mask*.*+sent_0**sep+*
                 # Prompt is next to cls.
-                prompt = template_list[cls_pos + 1]
+                prompt = template_list[cls_pos + 1] + " " + template_list[cls_pos + 3]
             if prompt.startswith("_"):
                 prompt = prompt[1:]
         segment_id = 0
